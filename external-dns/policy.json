@@ -1,0 +1,32 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": [
+          "route53:ChangeResourceRecordSets"
+        ],
+        "Resource": [
+          "arn:aws:route53:::hostedzone/*"
+        ],
+        "Condition": {
+          "ForAllValues:StringLike": {
+            "route53:ChangeResourceRecordSetsNormalizedRecordNames": ["*example.com", "marketing.example.com", "*-beta.example.com"],
+            "route53:ChangeResourceRecordSetsActions": ["CREATE", "UPSERT", "DELETE"],
+            "route53:ChangeResourceRecordSetsRecordTypes": ["A", "AAAA", "MX"]
+          }
+        }
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "route53:ListHostedZones",
+          "route53:ListResourceRecordSets",
+          "route53:ListTagsForResources"
+        ],
+        "Resource": [
+          "*"
+        ]
+      }
+    ]
+  }
