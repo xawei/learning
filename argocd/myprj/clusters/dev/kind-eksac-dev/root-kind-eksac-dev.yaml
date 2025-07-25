@@ -22,9 +22,10 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - PrunePropagationPolicy=foreground  # ✅ Ensure proper cleanup order
-      - PruneLast=true                     # ✅ Prune after sync, not before
+      - PruneLast=false                    # ✅ Prune first to clear stuck resources
       - Replace=true                       # ✅ Force replace stuck resources
       - ApplyOutOfSyncOnly=true           # ✅ Only apply what's out of sync
+      - Delete=true                        # ✅ Allow deletion of applications
     retry:
       limit: 5
       backoff:
