@@ -23,6 +23,8 @@ spec:
       - CreateNamespace=true
       - PrunePropagationPolicy=foreground  # ✅ Ensure proper cleanup order
       - PruneLast=true                     # ✅ Prune after sync, not before
+      - Replace=true                       # ✅ Force replace stuck resources
+      - ApplyOutOfSyncOnly=true           # ✅ Only apply what's out of sync
     retry:
       limit: 5
       backoff:
