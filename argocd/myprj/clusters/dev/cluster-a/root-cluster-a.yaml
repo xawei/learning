@@ -16,10 +16,13 @@ spec:
     namespace: argocd
   syncPolicy:
     automated:
-      prune: true
-      selfHeal: true
+      prune: true        # ✅ Automatically remove resources not in Git
+      selfHeal: true     # ✅ Automatically sync when Git changes
+      allowEmpty: false  # ✅ Prevent accidental deletion of all apps
     syncOptions:
       - CreateNamespace=true
+      - PrunePropagationPolicy=foreground  # ✅ Ensure proper cleanup order
+      - PruneLast=true                     # ✅ Prune after sync, not before
     retry:
       limit: 5
       backoff:
