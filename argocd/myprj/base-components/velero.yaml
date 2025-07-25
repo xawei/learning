@@ -136,22 +136,22 @@ spec:
             prometheus.io/path: "/metrics"
 
         # Deployment settings
-        deployRestic: true
-        restic:
-          podVolumePath: /var/lib/kubelet/pods
-          privileged: false
-          priorityClassName: ""
-          resources:
-            requests:
-              cpu: 100m
-              memory: 128Mi
-            limits:
-              cpu: 500m
-              memory: 512Mi
-          tolerations: []
-          securityContext:
-            runAsUser: 0
-            privileged: false
+                       deployNodeAgent: true
+               nodeAgent:
+                 podVolumePath: /var/lib/kubelet/pods
+                 privileged: false
+                 priorityClassName: ""
+                 resources:
+                   requests:
+                     cpu: 100m
+                     memory: 128Mi
+                   limits:
+                     cpu: 500m
+                     memory: 512Mi
+                 tolerations: []
+                 securityContext:
+                   runAsUser: 0
+                   privileged: false
   destination:
     server: https://kubernetes.default.svc
     namespace: velero
