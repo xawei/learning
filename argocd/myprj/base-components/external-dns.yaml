@@ -1,0 +1,80 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: external-dns
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://kubernetes-sigs.github.io/external-dns
+    chart: external-dns
+    targetRevision: 1.14.3
+    helm:
+      values: |
+        # External DNS configuration
+        sources:
+          - service
+          - ingress
+        
+        # Provider configuration (example for Route53, adjust as needed)
+        provider: aws
+        
+        # AWS Route53 specific settings
+        aws:
+          zoneType: public
+          assumeRoleArn: ""
+          
+        # Domain filter (adjust to your domain)
+        domainFilters:
+          - example.com
+        
+        # Policy for DNS record management
+        policy: upsert-only
+        
+        # Registry for tracking DNS records
+        registry: txt
+        txtOwnerId: external-dns
+        
+        # Resource settings
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            cpu: 50m
+            memory: 64Mi
+        
+        # Logging
+        logLevel: info
+        logFormat: text
+        
+        # Security
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 65534
+          fsGroup: 65534
+        
+        # Deployment settings
+        replicas: 1
+        
+        # Metrics
+        metrics:
+          enabled: true
+          port: 7979
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: external-dns
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m 
