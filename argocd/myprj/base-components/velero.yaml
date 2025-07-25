@@ -23,14 +23,14 @@ spec:
                 region: us-west-2
                 s3ForcePathStyle: false
           volumeSnapshotLocation:
-            - name: default  
+            - name: default
               provider: aws
               config:
                 region: us-west-2
           defaultBackupTTL: 720h
           logLevel: info
         
-        # Service account  
+        # Service account
         serviceAccount:
           server:
             create: true
