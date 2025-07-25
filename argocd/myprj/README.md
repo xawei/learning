@@ -31,6 +31,67 @@ argocd/myprj/
 3. **Automatic Discovery**: ArgoCD automatically installs all YAML files in `base-components/`
 4. **Official Helm Charts**: Each application uses upstream Helm charts from official repositories
 
+## Automatic GitOps Behavior
+
+### ✅ **Fully Automatic - No Manual Intervention Required**
+
+Our root applications are configured with enhanced sync policies for reliable automatic GitOps:
+
+```yaml
+syncPolicy:
+  automated:
+    prune: true        # ✅ Auto-remove apps when deleted from Git
+    selfHeal: true     # ✅ Auto-sync when Git changes
+    allowEmpty: false  # ✅ Prevent accidental deletion of all apps
+  syncOptions:
+    - PrunePropagationPolicy=foreground  # ✅ Proper cleanup order
+    - PruneLast=true                     # ✅ Prune after sync
+```
+
+### 🔄 **What Happens Automatically**
+
+| Action in Git | ArgoCD Response | Manual Effort |
+|---------------|-----------------|---------------|
+| Add new app YAML to `base-components/` | ✅ Automatically installs | **None** |
+| Remove app YAML from `base-components/` | ✅ Automatically uninstalls | **None** |
+| Modify app YAML in `base-components/` | ✅ Automatically updates | **None** |
+| Change Helm values in app | ✅ Automatically syncs | **None** |
+
+### 🧪 **Test the Automatic Behavior**
+
+Try this to see automatic installation/removal in action:
+
+```bash
+# 1. Add a new application
+cat > base-components/grafana.yaml << EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana
+spec:
+  source:
+    repoURL: https://grafana.github.io/helm-charts
+    chart: grafana
+    targetRevision: 6.50.0
+    helm:
+      values: |
+        adminPassword: admin
+EOF
+
+# 2. Commit and push
+git add . && git commit -m "Add Grafana" && git push
+
+# 3. Watch ArgoCD automatically create the grafana application
+kubectl get applications -n argocd -w
+
+# 4. Remove the application
+rm base-components/grafana.yaml
+git add . && git commit -m "Remove Grafana" && git push
+
+# 5. Watch ArgoCD automatically remove it
+kubectl get applications -n argocd -w
+```
+
 ## Usage
 
 ### Deploy to a Cluster
@@ -78,10 +139,11 @@ spec:
 
 ## Key Features
 
+- ✅ **Zero Manual Intervention**: Add/remove apps by editing Git only
 - ✅ **Ultra Simple**: Just 2 applications, no environment complexity
 - ✅ **Official Charts**: Uses upstream Helm repositories directly
 - ✅ **Auto-Discovery**: ArgoCD automatically finds all applications
-- ✅ **GitOps**: Version controlled, declarative configuration
+- ✅ **GitOps**: True GitOps - Git is the single source of truth
 - ✅ **Multi-Cluster**: Same components work for all clusters
 
 ## Next Steps
