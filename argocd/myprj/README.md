@@ -7,9 +7,8 @@ Simple ArgoCD "App of Apps" pattern using **official Helm chart repositories** t
 ```
 argocd/myprj/
 ├── base-components/             # ArgoCD Application definitions (flat structure)
-│   ├── cert-manager.yaml       # Uses https://charts.jetstack.io
-│   ├── ingress-nginx-dev.yaml  # Uses https://kubernetes.github.io/ingress-nginx
-│   └── ingress-nginx-prod.yaml # Production-tuned ingress with autoscaling
+│   ├── cert-manager.yaml       # TLS certificate management
+│   └── ingress-nginx.yaml      # NGINX Ingress Controller
 ├── clusters/                    # Root applications for each cluster
 │   ├── dev/
 │   │   ├── cluster-a/
@@ -27,9 +26,9 @@ argocd/myprj/
 
 ## How It Works
 
-1. **Flat Structure**: All ArgoCD Applications are directly in `base-components/` (no subdirectories)
+1. **Flat Structure**: All ArgoCD Applications are directly in `base-components/`
 2. **Root Applications**: Each cluster has a root app that points to `base-components/`
-3. **Automatic Discovery**: ArgoCD automatically discovers and installs all YAML files in `base-components/`
+3. **Automatic Discovery**: ArgoCD automatically installs all YAML files in `base-components/`
 4. **Official Helm Charts**: Each application uses upstream Helm charts from official repositories
 
 ## Usage
@@ -74,21 +73,19 @@ spec:
 
 ## Components Included
 
-### For All Clusters
 - **cert-manager**: TLS certificate management from https://charts.jetstack.io
-- **ingress-nginx-dev**: NGINX Ingress (dev config) from https://kubernetes.github.io/ingress-nginx
-- **ingress-nginx-prod**: NGINX Ingress (prod config) with autoscaling and higher resources
+- **ingress-nginx**: NGINX Ingress Controller from https://kubernetes.github.io/ingress-nginx
 
 ## Key Features
 
-- ✅ **Simple**: Flat structure, no complex directory hierarchy
+- ✅ **Ultra Simple**: Just 2 applications, no environment complexity
 - ✅ **Official Charts**: Uses upstream Helm repositories directly
 - ✅ **Auto-Discovery**: ArgoCD automatically finds all applications
 - ✅ **GitOps**: Version controlled, declarative configuration
-- ✅ **Multi-Cluster**: Same structure works for dev/prod clusters
+- ✅ **Multi-Cluster**: Same components work for all clusters
 
 ## Next Steps
 
-1. Add more components to `base-components/` as needed
+1. Add more components by dropping YAML files in `base-components/`
 2. Deploy root applications to your clusters
 3. Monitor applications via ArgoCD UI or kubectl 
