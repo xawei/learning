@@ -11,6 +11,9 @@ spec:
     repoURL: https://github.com/xawei/learning
     targetRevision: main
     path: argocd/myprj/base-components
+    directory:
+      recurse: true
+      include: "*.yaml"
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
