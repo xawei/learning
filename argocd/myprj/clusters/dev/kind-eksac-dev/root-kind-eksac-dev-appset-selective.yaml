@@ -1,0 +1,56 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: root-kind-eksac-dev-selective
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  generators:
+  # Generator 1: Common applications (root + common directory only)
+  - git:
+      repoURL: https://github.com/xawei/learning
+      revision: main
+      files:
+      - path: "argocd/myprj/base-components/*.yaml"           # Root level apps
+      - path: "argocd/myprj/base-components/common/*.yaml"    # Common apps
+  # Generator 2: Cluster-specific applications
+  - git:
+      repoURL: https://github.com/xawei/learning
+      revision: main
+      files:
+      - path: "argocd/myprj/base-components/dev/kind-eksac-dev/*.yaml"  # This cluster's apps
+  template:
+    metadata:
+      name: '{{path.basenameNormalized}}'
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/xawei/learning
+        targetRevision: main
+        path: '{{path.path}}'
+        directory:
+          include: '{{path.basename}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: argocd
+      syncPolicy:
+        automated:
+          prune: true        # ✅ Automatically remove resources not in Git
+          selfHeal: true     # ✅ Automatically sync when Git changes
+          allowEmpty: false  # ✅ Prevent accidental deletion of all apps
+        syncOptions:
+          - CreateNamespace=true
+          - PrunePropagationPolicy=foreground  # ✅ Ensure proper cleanup order
+          - PruneLast=false                    # ✅ Prune first to clear stuck resources
+          - Replace=true                       # ✅ Force replace stuck resources
+          - ApplyOutOfSyncOnly=true           # ✅ Only apply what's out of sync
+          - Delete=true                        # ✅ Allow deletion of applications
+        retry:
+          limit: 5
+          backoff:
+            duration: 5s
+            factor: 2
+            maxDuration: 3m 
