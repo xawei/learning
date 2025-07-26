@@ -1,16 +1,24 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: root-kind-eksac-dev
+  name: root-kind-eksac-dev-multisource
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
-  source:
-    repoURL: https://github.com/xawei/learning
+  sources:
+  # Source 1: Common applications (root level + common directory)
+  - repoURL: https://github.com/xawei/learning
     targetRevision: main
-    path: argocd/myprj/base-components
+    path: argocd/myprj/base-components/common
+    directory:
+      recurse: true
+      include: "*.yaml"
+  # Source 2: Cluster-specific applications for this cluster
+  - repoURL: https://github.com/xawei/learning
+    targetRevision: main
+    path: argocd/myprj/base-components/dev/kind-eksac-dev
     directory:
       recurse: true
       include: "*.yaml"
@@ -34,4 +42,4 @@ spec:
       backoff:
         duration: 5s
         factor: 2
-        maxDuration: 3m
+        maxDuration: 3m 

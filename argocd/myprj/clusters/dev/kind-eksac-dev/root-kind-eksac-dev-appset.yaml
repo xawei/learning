@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: root-kind-eksac-dev-appset
+  name: root-kind-eksac-dev
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -11,10 +11,11 @@ spec:
       repoURL: https://github.com/xawei/learning
       revision: main
       files:
-      - path: "argocd/myprj/base-components/**/*.yaml"
+      - path: "argocd/myprj/base-components/common/*.yaml"    # Common apps
+      - path: "argocd/myprj/base-components/dev/kind-eksac-dev/*.yaml"  # This cluster's apps
   template:
     metadata:
-      name: '{{path.basenameNormalized}}-{{path[1]}}'  # Creates unique names like cert-manager-base-components
+      name: '{{path.basenameNormalized}}'
       finalizers:
         - resources-finalizer.argocd.argoproj.io
     spec:
