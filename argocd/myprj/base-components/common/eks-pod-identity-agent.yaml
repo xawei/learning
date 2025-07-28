@@ -8,9 +8,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://aws.github.io/eks-charts
-    chart: eks-pod-identity-agent
-    targetRevision: 1.3.4  # Latest stable version
+    repoURL: https://github.com/aws/eks-pod-identity-agent
+    targetRevision: main
+    path: charts/eks-pod-identity-agent
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system
