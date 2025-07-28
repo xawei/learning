@@ -98,4 +98,14 @@ spec:
       backoff:
         duration: 5s
         factor: 2
-        maxDuration: 3m 
+        maxDuration: 3m
+  ignoreDifferences:
+  - group: apps
+    kind: Deployment
+    jsonPointers:
+    - /spec/progressDeadlineSeconds
+    - /spec/revisionHistoryLimit
+  - group: ""
+    kind: Service
+    jsonPointers:
+    - /spec/sessionAffinity 
