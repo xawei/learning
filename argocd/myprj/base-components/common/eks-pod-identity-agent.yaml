@@ -8,9 +8,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/xawei/learning
-    targetRevision: main
-    path: argocd/myprj/base-components/common/eks-pod-identity-agent-manifests
+    repoURL: https://aws.github.io/eks-charts
+    chart: eks-pod-identity-agent
+    targetRevision: 1.3.4  # Latest stable version
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system
@@ -20,7 +20,6 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - ServerSideApply=true
     retry:
       limit: 5
       backoff:
