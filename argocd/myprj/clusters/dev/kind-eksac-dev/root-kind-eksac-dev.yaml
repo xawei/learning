@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   sources:
-  # Source 1: Common applications (root level + common directory)
+  # Source 1: Common applications (common directory)
   - repoURL: https://github.com/xawei/learning
     targetRevision: main
     path: argocd/myprj/base-components/common
