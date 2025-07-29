@@ -8,40 +8,31 @@ metadata:
 spec:
   project: default
   sources:
-  # Source 1: Common applications (common directory) with parameter overrides
+  # Source 1: The common Helm chart
   - repoURL: https://github.com/xawei/learning
     targetRevision: main
     path: argocd/myprj/base-components/common
-    directory:
-      recurse: true
-      include: "*.yaml"
-    # Override cluster-specific values in common applications
+    chart: ./ # This tells ArgoCD to treat the path as a Helm chart
     helm:
+      # This is where we override the clusterName for this specific cluster
       parameters:
       - name: clusterName
         value: andy-cluster-xplane-eks-cluster
-  # Source 2: Cluster-specific applications for this cluster
+  # Source 2: Any additional cluster-specific applications
   - repoURL: https://github.com/xawei/learning
     targetRevision: main
     path: argocd/myprj/base-components/dev/andy-cluster-xplane-eks-cluster
     directory:
       recurse: true
-      include: "*.yaml"
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: argocd # Deploying the apps themselves into argocd namespace
   syncPolicy:
     automated:
-      prune: true        # ✅ Automatically remove resources not in Git
-      selfHeal: true     # ✅ Automatically sync when Git changes
-      allowEmpty: false  # ✅ Prevent accidental deletion of all apps
+      prune: true
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - PrunePropagationPolicy=foreground  # ✅ Ensure proper cleanup order
-      - PruneLast=false                    # ✅ Prune first to clear stuck resources
-      - Replace=true                       # ✅ Force replace stuck resources
-      - ApplyOutOfSyncOnly=true           # ✅ Only apply what's out of sync
-      - Delete=true                        # ✅ Allow deletion of applications
     retry:
       limit: 5
       backoff:

@@ -1,0 +1,6 @@
+# Default values for common-apps chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# This value will be overridden by the root application
+clusterName: "default-cluster" 
