@@ -16,7 +16,6 @@ velero:
     roleARN: "arn:aws:iam::ACCOUNT_ID:role/VeleroRole-Default"
 
   configuration:
-    provider: aws
     backupStorageLocation:
     - name: default
       provider: aws
