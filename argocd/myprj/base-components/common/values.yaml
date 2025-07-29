@@ -16,12 +16,18 @@ velero:
     roleARN: "arn:aws:iam::ACCOUNT_ID:role/VeleroRole-Default"
 
   configuration:
-    # -- Cloud provider for backups (e.g., aws, azure, gcp)
-    provider: "aws"
-    # -- The name of the S3 bucket where backups should be stored
-    bucket: "YOUR_BUCKET_NAME"
-    # -- The AWS region where the S3 bucket is located
-    region: "YOUR_BUCKET_REGION"
+    provider: aws
+    backupStorageLocation:
+    - name: default
+      provider: aws
+      bucket: "YOUR_BUCKET_NAME"
+      config:
+        region: "YOUR_BUCKET_REGION"
+    volumeSnapshotLocation:
+    - name: default
+      provider: aws
+      config:
+        region: "YOUR_BUCKET_REGION"
 
   # -- Velero plugins to install. For AWS, the aws plugin is required.
   # See: https://velero.io/docs/main/supported-providers/

@@ -22,16 +22,7 @@ spec:
         credentials:
           useSecret: false
         configuration:
-          provider: {{ .Values.velero.configuration.provider | quote }}
-          backupStorageLocation:
-            name: default
-            bucket: {{ .Values.velero.configuration.bucket | quote }}
-            config:
-              region: {{ .Values.velero.configuration.region | quote }}
-          volumeSnapshotLocation:
-            name: default
-            config:
-              region: {{ .Values.velero.configuration.region | quote }}
+{{ .Values.velero.configuration | toYaml | indent 10 }}
         initContainers:
         - name: velero-plugin-for-aws
           image: {{ index .Values.velero.plugins 0 "image" }}
@@ -39,7 +30,7 @@ spec:
             - mountPath: /target
               name: plugins
         tolerations:
-        {{- toYaml .Values.velero.tolerations | nindent 8 }}
+{{ .Values.velero.tolerations | toYaml | indent 8 }}
   destination:
     server: https://kubernetes.default.svc
     namespace: velero
