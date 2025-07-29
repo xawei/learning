@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: root-andy-xplane-eks-cluster
+  name: root-andy-cluster-xplane-eks-cluster
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -18,7 +18,7 @@ spec:
   # Source 2: Cluster-specific applications for this cluster
   - repoURL: https://github.com/xawei/learning
     targetRevision: main
-    path: argocd/myprj/base-components/dev/andy-xplane-eks-cluster
+    path: argocd/myprj/base-components/dev/andy-cluster-xplane-eks-cluster
     directory:
       recurse: true
       include: "*.yaml"
