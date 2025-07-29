@@ -13,8 +13,8 @@ spec:
     targetRevision: 1.13.2
     helm:
       values: |
-        # PLACEHOLDER - will be replaced by Kustomize patches
-        clusterName: REPLACE_CLUSTER_NAME
+        # Cluster-specific configuration for andy-cluster-xplane-eks-cluster
+        clusterName: andy-cluster-xplane-eks-cluster
         region: ap-southeast-1
 
         replicaCount: 1
@@ -26,20 +26,25 @@ spec:
           value: "infra"
           effect: "NoSchedule"
 
-        # Default configurations - can be overridden per cluster
+        # Development settings
         resources:
           requests:
             cpu: 100m
             memory: 128Mi
           limits:
-            cpu: 200m
-            memory: 256Mi
+            cpu: 300m
+            memory: 512Mi
 
-        # Enable webhook
+        # Enable webhook for development
         enableCertManager: true
 
-        # Default logging
+        # Development logging
         logLevel: info
+
+        # Crossplane EKS specific settings
+        serviceAccount:
+          annotations:
+            eks.amazonaws.com/role-arn: "arn:aws:iam::ACCOUNT_ID:role/AWSLoadBalancerControllerRole"
         
   destination:
     server: 'https://kubernetes.default.svc'
