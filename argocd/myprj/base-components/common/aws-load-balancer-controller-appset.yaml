@@ -21,7 +21,7 @@ spec:
         logLevel: info
   template:
     metadata:
-      name: 'aws-load-balancer-controller-{{.nameNormalized}}'
+      name: 'aws-lbc-{{.nameNormalized}}'
       namespace: argocd
       finalizers:
         - resources-finalizer.argocd.argoproj.io
