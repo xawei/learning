@@ -9,19 +9,16 @@ metadata:
 spec:
   project: default
   source:
-    # Official Velero Helm chart
     repoURL: https://vmware-tanzu.github.io/helm-charts
     chart: velero
-    targetRevision: 6.2.2 # Current latest stable version
+    targetRevision: 10.0.10
     helm:
       values: |
-        # We pass the values from our parent chart directly to the Velero chart
         serviceAccount:
           server:
             create: true
             annotations:
               eks.amazonaws.com/role-arn: {{ .Values.velero.serviceAccount.roleARN | quote }}
-        # IRSA handles credentials, so we don't use a secret
         credentials:
           useSecret: false
         configuration:
@@ -36,17 +33,16 @@ spec:
             config:
               region: {{ .Values.velero.configuration.region | quote }}
         initContainers:
-          - name: velero-plugin-for-aws
-            image: {{ index .Values.velero.plugins 0 "image" }}
-            volumeMounts:
-              - mountPath: /target
-                name: plugins
-        # Schedule Velero pods on the infra nodepool
+        - name: velero-plugin-for-aws
+          image: {{ index .Values.velero.plugins 0 "image" }}
+          volumeMounts:
+            - mountPath: /target
+              name: plugins
         tolerations:
-        {{- toYaml .Values.velero.tolerations | nindent 10 }}
+        {{- toYaml .Values.velero.tolerations | nindent 8 }}
   destination:
     server: https://kubernetes.default.svc
-    namespace: velero # Velero is installed in its own namespace
+    namespace: velero
   syncPolicy:
     automated:
       prune: true
