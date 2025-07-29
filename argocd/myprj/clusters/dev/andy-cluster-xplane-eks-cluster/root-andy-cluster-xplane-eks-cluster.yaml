@@ -12,7 +12,7 @@ spec:
   - repoURL: https://github.com/xawei/learning
     targetRevision: main
     path: argocd/myprj/base-components/common
-    chart: ./ # This tells ArgoCD to treat the path as a Helm chart
+    # chart: ./ # This is removed to let ArgoCD auto-detect the chart
     helm:
       # This is where we override the clusterName for this specific cluster
       parameters:
