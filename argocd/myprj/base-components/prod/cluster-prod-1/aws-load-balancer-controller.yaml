@@ -1,0 +1,68 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: aws-load-balancer-controller
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://aws.github.io/eks-charts
+    chart: aws-load-balancer-controller
+    targetRevision: 1.13.2
+    helm:
+      values: |
+        clusterName: cluster-prod-1
+        region: ap-southeast-1
+
+        # Production replicas for high availability
+        replicaCount: 2
+
+        # Toleration for Karpenter infra nodepool
+        tolerations:
+        - key: "karpenter.sh/nodepool"
+          operator: "Equal"
+          value: "infra"
+          effect: "NoSchedule"
+
+        # Production-specific configurations
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+
+        # Enable webhook for production
+        enableCertManager: true
+
+        # Production logging
+        logLevel: info
+
+        # Production service account with IAM role
+        serviceAccount:
+          annotations:
+            eks.amazonaws.com/role-arn: "arn:aws:iam::ACCOUNT_ID:role/AWSLoadBalancerControllerRole"
+
+        # Production-specific node selector
+        nodeSelector:
+          kubernetes.io/os: linux
+          node.kubernetes.io/instance-type: m5.large
+        
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: aws-load-balancer-controller
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m 
