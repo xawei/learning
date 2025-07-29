@@ -3,4 +3,34 @@
 # Declare variables to be passed into your templates.
 
 # This value will be overridden by the root application
-clusterName: "default-cluster" 
+clusterName: "default-cluster"
+
+# Velero Backup Configuration
+velero:
+  # -- Set to false to disable Velero installation
+  enabled: true
+
+  serviceAccount:
+    # -- The ARN of the IAM role to associate with the Velero service account.
+    # This will be overridden by the root application for each cluster.
+    roleARN: "arn:aws:iam::ACCOUNT_ID:role/VeleroRole-Default"
+
+  configuration:
+    # -- Cloud provider for backups (e.g., aws, azure, gcp)
+    provider: "aws"
+    # -- The name of the S3 bucket where backups should be stored
+    bucket: "YOUR_BUCKET_NAME"
+    # -- The AWS region where the S3 bucket is located
+    region: "YOUR_BUCKET_REGION"
+
+  # -- Velero plugins to install. For AWS, the aws plugin is required.
+  # See: https://velero.io/docs/main/supported-providers/
+  plugins:
+    - name: velero-plugin-for-aws
+      image: velero/velero-plugin-for-aws:v1.10.0 # Use a specific stable version
+
+  # -- Tolerations for Velero pods to run on specific nodes
+  tolerations:
+  - key: "karpenter.sh/nodepool"
+    operator: "Equal"
+    value: "infra" 

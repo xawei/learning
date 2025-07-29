@@ -18,6 +18,9 @@ spec:
       parameters:
       - name: clusterName
         value: andy-cluster-xplane-eks-cluster
+      # We also override the Velero IAM Role ARN for this cluster
+      - name: velero.serviceAccount.roleARN
+        value: "arn:aws:iam::249140151390:role/VeleroRole-andy-cluster-xplane-eks-cluster"
   # Source 2: Any additional cluster-specific applications
   - repoURL: https://github.com/xawei/learning
     targetRevision: main

@@ -1,0 +1,56 @@
+{{- if .Values.velero.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: velero
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    # Official Velero Helm chart
+    repoURL: https://vmware-tanzu.github.io/helm-charts
+    chart: velero
+    targetRevision: 6.2.2 # Current latest stable version
+    helm:
+      values: |
+        # We pass the values from our parent chart directly to the Velero chart
+        serviceAccount:
+          server:
+            create: true
+            annotations:
+              eks.amazonaws.com/role-arn: {{ .Values.velero.serviceAccount.roleARN | quote }}
+        # IRSA handles credentials, so we don't use a secret
+        credentials:
+          useSecret: false
+        configuration:
+          provider: {{ .Values.velero.configuration.provider | quote }}
+          backupStorageLocation:
+            name: default
+            bucket: {{ .Values.velero.configuration.bucket | quote }}
+            config:
+              region: {{ .Values.velero.configuration.region | quote }}
+          volumeSnapshotLocation:
+            name: default
+            config:
+              region: {{ .Values.velero.configuration.region | quote }}
+        initContainers:
+          - name: velero-plugin-for-aws
+            image: {{ index .Values.velero.plugins 0 "image" }}
+            volumeMounts:
+              - mountPath: /target
+                name: plugins
+        # Schedule Velero pods on the infra nodepool
+        tolerations:
+        {{- toYaml .Values.velero.tolerations | nindent 10 }}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: velero # Velero is installed in its own namespace
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+{{- end }} 
