@@ -21,6 +21,12 @@ spec:
       # We also override the Velero IAM Role ARN for this cluster
       - name: velero.serviceAccount.roleARN
         value: "arn:aws:iam::249140151390:role/VeleroRole-andy-cluster-xplane-eks-cluster"
+      # We also override the AWS EBS CSI Driver IAM Role ARN for this cluster
+      - name: awsEbsCsiDriver.serviceAccount.roleARN
+        value: "arn:aws:iam::249140151390:role/EbsCsiDriverRole-andy-cluster-xplane-eks-cluster"
+      # We also override the AWS EFS CSI Driver IAM Role ARN for this cluster
+      - name: awsEfsCsiDriver.serviceAccount.roleARN
+        value: "arn:aws:iam::249140151390:role/EfsCsiDriverRole-andy-cluster-xplane-eks-cluster"
   # Source 2: Any additional cluster-specific applications
   - repoURL: https://github.com/xawei/learning
     targetRevision: main
