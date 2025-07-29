@@ -31,7 +31,10 @@ spec:
         # Node daemonset runs on all nodes, no tolerations needed
         node:
           serviceAccount:
-            create: false
+            create: true
+            name: "ebs-csi-node-sa"
+            annotations:
+              eks.amazonaws.com/role-arn: {{ .Values.awsEbsCsiDriver.serviceAccount.roleARN | quote }}
           resources:
             requests:
               cpu: 10m
