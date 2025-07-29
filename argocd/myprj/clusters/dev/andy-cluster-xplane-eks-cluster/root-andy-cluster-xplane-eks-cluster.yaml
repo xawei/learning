@@ -8,13 +8,18 @@ metadata:
 spec:
   project: default
   sources:
-  # Source 1: Common applications (common directory)
+  # Source 1: Common applications (common directory) with parameter overrides
   - repoURL: https://github.com/xawei/learning
     targetRevision: main
     path: argocd/myprj/base-components/common
     directory:
       recurse: true
       include: "*.yaml"
+    # Override cluster-specific values in common applications
+    helm:
+      parameters:
+      - name: clusterName
+        value: andy-cluster-xplane-eks-cluster
   # Source 2: Cluster-specific applications for this cluster
   - repoURL: https://github.com/xawei/learning
     targetRevision: main

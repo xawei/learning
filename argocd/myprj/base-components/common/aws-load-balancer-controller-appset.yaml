@@ -9,7 +9,7 @@ spec:
   goTemplate: true
   goTemplateOptions: ["missingkey=error"]
   generators:
-  # Cluster Generator - discovers all clusters and creates one AWS LBC per cluster
+  # Cluster Generator - discovers cluster secrets and creates one AWS LBC per cluster
   - clusters:
       selector:
         matchLabels:
