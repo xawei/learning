@@ -7,21 +7,11 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
-  sources:
-  # Source 1: Common applications (common directory)
-  - repoURL: https://github.com/xawei/learning
-    targetRevision: main
-    path: argocd/myprj/base-components/common
-    directory:
-      recurse: true
-      include: "*.yaml"
-  # Source 2: Cluster-specific applications for this cluster
-  - repoURL: https://github.com/xawei/learning
+  source:
+    repoURL: https://github.com/xawei/learning
     targetRevision: main
     path: argocd/myprj/base-components/dev/kind-eksac-dev
-    directory:
-      recurse: true
-      include: "*.yaml"
+    # Use Kustomize to apply common base with cluster-specific patches
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

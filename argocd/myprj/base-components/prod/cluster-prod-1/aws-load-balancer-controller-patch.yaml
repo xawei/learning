@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: aws-load-balancer-controller
+spec:
+  source:
+    helm:
+      values: |
+        # Cluster-specific configuration for cluster-prod-1
+        clusterName: cluster-prod-1
+        
+        # Production replicas for high availability
+        replicaCount: 2
+        
+        # Production logging
+        logLevel: info
+        
+        # Production resources
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        
+        # Production service account with IAM role
+        serviceAccount:
+          annotations:
+            eks.amazonaws.com/role-arn: "arn:aws:iam::ACCOUNT_ID:role/AWSLoadBalancerControllerRole"
+        
+        # Production-specific node selector
+        nodeSelector:
+          kubernetes.io/os: linux
+          node.kubernetes.io/instance-type: m5.large 
